@@ -1,0 +1,22 @@
+configuration:
+  language:
+    name: Language
+    description: Language of the entity names and messages in Home Assistant.
+  device_pin:
+    name: Device PIN
+    description: PIN of the sauna control (service menu "PIN", factory 1234). Sent to the module with each start.
+  start_pin:
+    name: Start PIN
+    description: PIN you enter in Home Assistant to start the sauna (lock "Start (PIN)"). Change it!
+  port:
+    name: Port
+    description: TCP port the Wi-Fi module connects to (the cloud uses 28888).
+  module_ip:
+    name: Module IP (DNAT only)
+    description: Only if the router redirects the cloud address to this host – IP of the sauna module for the return route.
+  router_ip:
+    name: Router IP (DNAT only)
+    description: Only with module IP – the router that does the redirect.
+  log_frames:
+    name: Record frames
+    description: Write all frames (without PIN) to /share/klafs_local for debugging.

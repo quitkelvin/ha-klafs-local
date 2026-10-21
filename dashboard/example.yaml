@@ -1,0 +1,29 @@
+# Example (Lovelace, manual card). Resource: /local/pin-card.js (type: JavaScript module)
+type: vertical-stack
+cards:
+  - type: conditional
+    conditions:
+      - condition: state
+        entity: switch.klafs_sauna_sauna
+        state_not: "on"
+    card:
+      type: custom:bubble-pin-card
+      entity: lock.klafs_sauna_start_pin
+      titel: Start sauna – PIN
+      hinweis: Cabin free, nothing on the heater? Enter the PIN – starts at once.
+      gesendet: Start sent
+      knopf: Start
+  - type: entities
+    entities:
+      - switch.klafs_sauna_sauna
+      - select.klafs_sauna_modus
+      - number.klafs_sauna_temp_sauna
+      - number.klafs_sauna_temp_sanarium
+      - number.klafs_sauna_feuchte_stufe
+      - sensor.klafs_sauna_temperatur
+      - sensor.klafs_sauna_status
+      - sensor.klafs_sauna_prognose
+      - sensor.klafs_sauna_aufgeheizt
+      - binary_sensor.klafs_sauna_bereit
+      - binary_sensor.klafs_sauna_verbunden
+      - sensor.klafs_sauna_hinweis
