@@ -1,0 +1,22 @@
+configuration:
+  language:
+    name: Sprache
+    description: Sprache der Entitätsnamen und Meldungen in Home Assistant.
+  device_pin:
+    name: Geräte-PIN
+    description: PIN der Saunasteuerung (Servicemenü „PIN“, ab Werk 1234). Wird bei jedem Start ans Modul geschickt.
+  start_pin:
+    name: Start-PIN
+    description: PIN, die du in Home Assistant zum Starten eingibst (Schloss „Start (PIN)“). Bitte ändern!
+  port:
+    name: Port
+    description: TCP-Port, mit dem sich das WLAN-Modul verbindet (die Cloud nutzt 28888).
+  module_ip:
+    name: Modul-IP (nur DNAT)
+    description: Nur wenn der Router die Cloud-Adresse auf diesen Rechner umleitet – IP des Saunamoduls für den Rückweg.
+  router_ip:
+    name: Router-IP (nur DNAT)
+    description: Nur mit Modul-IP – der Router, der umleitet.
+  log_frames:
+    name: Rahmen mitschreiben
+    description: Alle Rahmen (ohne PIN) nach /share/klafs_local schreiben (Fehlersuche).
