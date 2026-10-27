@@ -88,7 +88,12 @@ commands `klafs/sauna/set/{power,start,modus,temp_sauna,temp_sanarium,feuchte}`.
 |---|---|
 | language | en / de for entity names and messages |
 | device_pin | PIN of the control (factory 1234), sent with each start |
-| start_pin | PIN for Home Assistant (lock "Start (PIN)") – change it |
+| start_pin | PIN for Home Assistant (lock "Start (PIN)"). **Empty by default – starting is disabled until you set your own PIN (at least 6 characters, no trivial sequence).** 5 wrong PINs lock the start for 15 minutes. |
 | port | 28888 |
 | module_ip, router_ip | only for DNAT: return route |
 | log_frames | write all frames (PIN masked) to /share/klafs_local |
+
+## Changes 0.2.1
+- Retained MQTT commands are ignored and cleared (a stored start command can no longer re-start the sauna after a reconnect).
+- Start is disabled until an own start PIN (≥ 6 characters) is configured; the former default 1234 is no longer accepted.
+- 5 wrong PINs lock the start for 15 minutes.
