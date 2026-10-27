@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+- Safety: retained MQTT commands are ignored and cleared – a stored START can no longer re-start the sauna after a reconnect.
+- Safety: start is disabled until you set your own start PIN (at least 6 characters, no trivial sequence); the default 1234 is gone.
+- Safety: 5 wrong PINs lock the start for 15 minutes.
+
 ## 0.2.0
 - Frame header is no longer hard-coded: the 10-byte device header is learned from the module's first frame
   (length, 02/03/04 layout and CRC must match); nothing is sent before it is known. The selftest learns it from the log.

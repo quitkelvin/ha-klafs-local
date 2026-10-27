@@ -51,6 +51,8 @@ TEXT = {
            'offline': 'Wi-Fi module offline', 'offline_run': 'Wi-Fi module offline (was running)',
            'waiting': 'Start waiting for Wi-Fi module', 'preset': 'preset {t}', 'requested': 'requested (check KEY / start time)',
            'no_pin': 'Not started: start only with PIN ("Start (PIN)").', 'wrong_pin': 'Not started: wrong PIN.',
+           'weak_pin': 'Start disabled: set your own start_pin (at least 6 digits, not 1234…) in the app options.',
+           'locked_pin': 'Start locked for 15 minutes after too many wrong PINs.',
            'sent': 'Start sent ({m}, start {t}).', 'failed': 'Command {a} failed: {e}', 'not_connected': 'Wi-Fi module not connected',
            'past': 'Start time {t} is not in the future',
            'queued': 'Sauna not reachable right now – the start is sent as soon as it is online (until {t}).',
@@ -74,6 +76,8 @@ TEXT = {
            'offline': 'WLAN-Modul offline', 'offline_run': 'WLAN-Modul offline (lief zuletzt)',
            'waiting': 'Start wartet auf WLAN-Modul', 'preset': 'Vorwahl {t}', 'requested': 'angefordert (KEY/Startzeit prüfen)',
            'no_pin': 'Nicht gestartet: Start nur mit PIN („Start (PIN)“).', 'wrong_pin': 'Nicht gestartet: PIN falsch.',
+           'weak_pin': 'Start gesperrt: eigenen start_pin (mind. 6 Ziffern, nicht 1234…) in den App-Optionen setzen.',
+           'locked_pin': 'Start für 15 Minuten gesperrt – zu viele falsche PINs.',
            'sent': 'Start gesendet ({m}, Start {t}).', 'failed': 'Befehl {a} fehlgeschlagen: {e}', 'not_connected': 'WLAN-Modul nicht verbunden',
            'past': 'Startzeit {t} liegt nicht in der Zukunft',
            'queued': 'Sauna gerade nicht erreichbar – Start wird nachgeholt, sobald sie online ist (bis {t}).',
@@ -218,6 +222,12 @@ class HeatUp:
             below = [x for x in b if x <= k]
             return b[max(below)] if below else b[min(b)]
         return round(sum(rate(t // 5) for t in range(int(cur), int(target))))
+
+
+def pin_ok(pin) -> bool:
+    """Start PIN must be set by the user: at least 6 digits/characters, not a trivial sequence."""
+    p = str(pin or '').strip()
+    return len(p) >= 6 and len(set(p)) > 2 and p not in ('123456', '1234567', '12345678', '654321')
 
 
 class Sauna:
@@ -533,9 +543,17 @@ class Sauna:
             if b.get('aktion') == 'STOP':
                 self.pending = self.check_start = None
                 await self.send(STOP)
+            elif not pin_ok(self.o.get('start_pin', '')):
+                self.hint(t['weak_pin'])            # no start with the documented default or a short PIN
+            elif time.monotonic() < getattr(self, 'pin_lock_until', 0):
+                self.hint(t['locked_pin'])
             elif str(b.get('code', '')).strip() != str(self.o.get('start_pin', '')):
+                self.pin_fails = getattr(self, 'pin_fails', 0) + 1
+                if self.pin_fails >= 5:              # 5 wrong PINs → 15 min lock
+                    self.pin_lock_until, self.pin_fails = time.monotonic() + 900, 0
                 self.hint(t['wrong_pin'])
             else:
+                self.pin_fails = 0
                 await self.request_start((b.get('zeit') or '').strip() or None)
         elif kind == 'modus':
             self.want['mode'] = 2 if value == 'Sanarium' else 1
@@ -633,6 +651,10 @@ async def main(a):
 
     def on_message(c, u, msg):
         kind = msg.topic.rsplit('/', 1)[1]
+        if msg.retain:   # a stored (retained) command must never start or change the sauna again after a reconnect
+            log.warning('ignored retained command on %s – clearing it', msg.topic)
+            c.publish(msg.topic, None, retain=True)
+            return
         fut = asyncio.run_coroutine_threadsafe(s.command(kind, msg.payload.decode()), s.loop)
         fut.add_done_callback(lambda f: f.exception() and s.hint(s.t['failed'].format(a=kind, e=f.exception())))
 
