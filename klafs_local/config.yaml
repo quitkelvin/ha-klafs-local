@@ -8,7 +8,6 @@ arch:
   - amd64
 init: false
 startup: services
-boot: auto
 host_network: true
 privileged:
   - NET_ADMIN
