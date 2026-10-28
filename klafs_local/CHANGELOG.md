@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 (docs, 28.10.2026)
+- Safety docs: KEY = 1 (key switch) is the recommended default; KEY = 2 only with an approved safety device (SKS/BONATHERM).
+- Tested on one installation only (control 18033) – other models untested.
+- Liability note: "as far as the law permits"; mandatory statutory liability is not affected.
+
 ## 0.2.1
 - Safety: retained MQTT commands are ignored and cleared – a stored START can no longer re-start the sauna after a reconnect.
 - Safety: start is disabled until you set your own start PIN (at least 6 characters, no trivial sequence); the default 1234 is gone.

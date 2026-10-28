@@ -18,8 +18,10 @@ This app listens on the same port, answers like the cloud and publishes the saun
 
 ### Sauna control settings
 
-- Service menu **20 KEY = 2** ("remote"). 0 = remote start is only "requested" (state 1), 1 = a key switch must
-  confirm every start (key symbol in the display, also for starts on the panel).
+- Service menu **20 KEY**: safe default **1** = a key switch must confirm every start (key symbol in the display, also
+  for starts on the panel). **2** ("remote", no key) **only** with an approved safety device (SKS over the heater or
+  BONATHERM) and if the manual of your control/heater allows remote start. 0 = remote start is only "requested"
+  (state 1).
 - The control takes the time sent with the values as **start time**. A start time in the past makes it wait until the
   next day – the app always sends now + 1 minute (or the preset time you choose).
 - Remote switch-on is only allowed with a safety device (SKS, BONATHERM or key switch) – see README.
@@ -32,7 +34,7 @@ This app listens on the same port, answers like the cloud and publishes the saun
   "Start waiting for Wi-Fi module") and sent with the next heartbeat. Without a heartbeat within 1 h you get the
   message "not reachable for 1 h – please try again". A stop clears a queued start.
 - **Start check**: 3 min after a start the app checks that the sauna runs (or shows the preset). If not, the start is
-  sent once more; if it still does not run, a message asks you to check the control (KEY = 2?).
+  sent once more; if it still does not run, a message asks you to check the control (key switch / KEY setting).
 - **Heat-up forecast**: every heat-up is stored per minute in `/data/heatup.db`. From the last 10 runs the app learns
   the minutes per kelvin in 5-K bands (median) and shows *Forecast* ("ready at about HH:MM (X min left)"),
   *Minutes to ready* and *Heated* (%). Before the first complete heat-up to "ready" the forecast says
