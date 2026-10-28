@@ -1,0 +1,123 @@
+# Bubble-style dashboard view (dark, rounded cards) – requires Bubble Card from HACS (Clooos/Bubble-Card, v3.2 or newer).
+# Add it as a view: Edit dashboard → ⋮ → Raw configuration editor → paste under `views:` (or copy the two cards into an existing view).
+# Tap the main card to open the pop-up (hash #sauna). Entity IDs are the defaults for an English installation –
+# adjust them if your device or entities are named differently.
+title: Sauna
+path: sauna
+cards:
+- type: vertical-stack
+  cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Sauna
+    icon: mdi:sauna
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: sensor.klafs_sauna_temperatur
+    name: Cabin
+    show_state: true
+    icon: mdi:sauna
+    sub_button:
+    - entity: sensor.klafs_sauna_status
+      show_state: true
+      show_icon: true
+    - entity: sensor.klafs_sauna_aufgeheizt
+      show_state: true
+      show_icon: true
+    tap_action:
+      action: navigate
+      navigation_path: '#sauna'
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+    - type: custom:bubble-card
+      card_type: button
+      button_type: state
+      entity: select.klafs_sauna_modus
+      name: Mode
+      show_state: true
+      icon: mdi:water-thermometer
+    - type: custom:bubble-card
+      card_type: button
+      button_type: state
+      entity: sensor.klafs_sauna_prognose
+      name: Ready
+      show_state: true
+      icon: mdi:timer-outline
+- type: custom:bubble-card
+  card_type: pop-up
+  hash: '#sauna'
+  popup_style: home-assistant
+  name: Sauna
+  icon: mdi:sauna
+  cards:
+  - type: custom:bubble-card
+    card_type: separator
+    name: Start
+    icon: mdi:play-circle
+  - type: conditional
+    conditions:
+    - condition: state
+      entity: switch.klafs_sauna_sauna
+      state_not: 'on'
+    card:
+      type: custom:bubble-pin-card
+      entity: lock.klafs_sauna_start_pin
+      titel: Start sauna – PIN
+      hinweis: Cabin free, nothing on the heater? Enter the PIN – starts at once.
+      gesendet: Start sent
+      knopf: Start
+  - type: custom:bubble-card
+    card_type: button
+    button_type: switch
+    entity: switch.klafs_sauna_sauna
+    name: Sauna (stop)
+    show_state: true
+    icon: mdi:power
+  - type: custom:bubble-card
+    card_type: separator
+    name: Settings
+    icon: mdi:tune-variant
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: select.klafs_sauna_modus
+    name: Mode
+    show_state: true
+    icon: mdi:water-thermometer
+  - type: custom:bubble-card
+    card_type: button
+    button_type: slider
+    entity: number.klafs_sauna_temp_sauna
+    name: Target sauna
+    show_state: true
+    icon: mdi:thermometer
+  - type: custom:bubble-card
+    card_type: button
+    button_type: slider
+    entity: number.klafs_sauna_feuchte_stufe
+    name: Humidity level (Sanarium)
+    show_state: true
+    icon: mdi:water-percent
+  - type: custom:bubble-card
+    card_type: separator
+    name: Status
+    icon: mdi:information-outline
+  - type: custom:bubble-card
+    card_type: button
+    button_type: state
+    entity: binary_sensor.klafs_sauna_verbunden
+    name: Wi-Fi module
+    show_state: true
+    icon: mdi:wifi
+    sub_button:
+    - entity: sensor.klafs_sauna_hinweis
+      show_state: true
+      show_icon: true
+  - type: history-graph
+    title: Cabin temperature 24 h
+    hours_to_show: 24
+    entities:
+    - entity: sensor.klafs_sauna_temperatur

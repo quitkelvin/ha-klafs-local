@@ -49,6 +49,13 @@ A sauna heater can start a fire. This software switches a heater on remotely –
   change the control's factory device PIN 1234 (see [DOCS](klafs_local/DOCS.md#mqtt-access-recommended)).
 - You alone are responsible for your installation and its operation. No warranty – see [LICENSE](LICENSE).
 
+## Dashboard (Bubble style)
+
+A ready-made dark dashboard view in Bubble Card style (rounded cards, pop-up with details) is in [`dashboard/bubble.yaml`](dashboard/bubble.yaml). It needs [Bubble Card](https://github.com/Clooos/Bubble-Card) (HACS, v3.2 or newer). Add it via *Edit dashboard → ⋮ → Raw configuration editor* under `views:`; entity IDs are the English defaults – adjust them if yours differ.
+The PIN pad is `custom:bubble-pin-card` from [`dashboard/pin-card.js`](dashboard/pin-card.js) (see *Dashboard* below).
+
+<img src="docs/images/bubble_popup.png" width="300" alt="Bubble dashboard">
+
 ## Installation
 
 1. Settings › Apps (Add-ons) › App store › ⋮ › Repositories → add `https://github.com/quitkelvin/ha-klafs-local`.
