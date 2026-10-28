@@ -91,3 +91,11 @@ prüfen (nichts auf oder am Ofen). KLAFS erlaubt Fernstart nur mit Sicherheitsei
 Schlüsselschalter) – die PIN in HA ersetzt das nicht, ebenso wenig Temperaturbegrenzer und Abschaltzeit der Steuerung.
 Ohne eine solche, für den Fernstart zugelassene Einrichtung die App nicht verwenden.
 Ausschalten am Bedienteil muss immer möglich sein. Alles in der eigenen Anlage doppelt prüfen. Keine Gewährleistung.
+
+## License
+
+MIT for the code in this repository (see [LICENSE](LICENSE)). No third-party code is included and no KLAFS software
+or firmware is part of it; the protocol was worked out from recordings of the own module. When the app is built, the
+Home Assistant base image (Alpine Linux, own licences) and the Python package
+[paho-mqtt](https://github.com/eclipse-paho/paho.mqtt.python) 2.1.0 (EPL-2.0 / EDL-1.0) are installed – they are not
+part of this repository and keep their own licences.
