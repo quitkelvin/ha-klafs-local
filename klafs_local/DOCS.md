@@ -80,8 +80,9 @@ counts reconnects per day (`connects_today` in the state JSON).
 
 State `klafs/sauna/zustand` (JSON), availability `klafs/sauna/verfuegbar`, messages `klafs/sauna/hinweis`,
 commands `klafs/sauna/set/{power,start,modus,temp_sauna,temp_sanarium,feuchte}`.
-`set/start` takes `{"aktion": "START", "code": "<start PIN>", "zeit": "HH:MM"}` (zeit optional = preset),
-`{"aktion": "STOP"}` stops. The state JSON also carries `heated_percent`, `minutes_to_ready`, `forecast` and `raw`
+`set/start` takes `{"aktion": "START", "code": "<start PIN>", "ts": <unix time>, "zeit": "HH:MM"}` (zeit optional =
+preset), `{"aktion": "STOP"}` stops. A start needs `ts` (HA adds it via `now()` in the lock's command template): at most
+60 s old and each value only once – a delayed or replayed start command is refused. Server and HA clock must be in sync. The state JSON also carries `heated_percent`, `minutes_to_ready`, `forecast` and `raw`
 (last heartbeat data).
 
 ## Options
@@ -94,6 +95,10 @@ commands `klafs/sauna/set/{power,start,modus,temp_sauna,temp_sanarium,feuchte}`.
 | port | 28888 |
 | module_ip, router_ip | only for DNAT: return route |
 | log_frames | write all frames (PIN masked) to /share/klafs_local |
+
+## Changes 0.2.2
+- Start only with a fresh, one-time command: HA adds a timestamp, older than 60 s or repeated → refused. A plain PIN as
+  payload (without JSON) no longer starts.
 
 ## Changes 0.2.1
 - Retained MQTT commands are ignored and cleared (a stored start command can no longer re-start the sauna after a reconnect).

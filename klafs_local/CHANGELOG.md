@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+- Safety: a start needs the timestamp Home Assistant adds to the lock command – older than 60 s or repeated → refused
+  (no delayed or replayed start). A plain PIN payload without JSON no longer starts; plain `STOP` still stops.
+
 ## 0.2.1 (docs, 28.10.2026)
 - Safety docs: KEY = 1 (key switch) is the recommended default; KEY = 2 only with an approved safety device (SKS/BONATHERM).
 - Tested on one installation only (control 18033) – other models untested.

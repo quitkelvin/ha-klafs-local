@@ -53,6 +53,7 @@ TEXT = {
            'no_pin': 'Not started: start only with PIN ("Start (PIN)").', 'wrong_pin': 'Not started: wrong PIN.',
            'weak_pin': 'Start disabled: set your own start_pin (at least 6 digits, not 1234…) in the app options.',
            'locked_pin': 'Start locked for 15 minutes after too many wrong PINs.',
+           'stale': 'Not started: start command too old or repeated – start again with the PIN.',
            'sent': 'Start sent ({m}, start {t}).', 'failed': 'Command {a} failed: {e}', 'not_connected': 'Wi-Fi module not connected',
            'past': 'Start time {t} is not in the future',
            'queued': 'Sauna not reachable right now – the start is sent as soon as it is online (until {t}).',
@@ -78,6 +79,7 @@ TEXT = {
            'no_pin': 'Nicht gestartet: Start nur mit PIN („Start (PIN)“).', 'wrong_pin': 'Nicht gestartet: PIN falsch.',
            'weak_pin': 'Start gesperrt: eigenen start_pin (mind. 6 Ziffern, nicht 1234…) in den App-Optionen setzen.',
            'locked_pin': 'Start für 15 Minuten gesperrt – zu viele falsche PINs.',
+           'stale': 'Nicht gestartet: Startbefehl veraltet oder doppelt – erneut mit PIN starten.',
            'sent': 'Start gesendet ({m}, Start {t}).', 'failed': 'Befehl {a} fehlgeschlagen: {e}', 'not_connected': 'WLAN-Modul nicht verbunden',
            'past': 'Startzeit {t} liegt nicht in der Zukunft',
            'queued': 'Sauna gerade nicht erreichbar – Start wird nachgeholt, sobald sie online ist (bis {t}).',
@@ -527,6 +529,17 @@ class Sauna:
         if self.mq:   # time appended so the same message triggers HA again
             self.mq.publish(PRE + '/hinweis', f'{text} ({datetime.datetime.now(self.tz):%H:%M:%S})')
 
+    def fresh(self, ts, window=60):
+        """A start needs the timestamp HA adds to the command: at most 60 s old, and each timestamp only once."""
+        try:
+            ts = float(ts)
+        except (TypeError, ValueError):
+            return False
+        if abs(time.time() - ts) > window or ts <= getattr(self, 'last_start_ts', 0):
+            return False
+        self.last_start_ts = ts
+        return True
+
     async def command(self, kind, value):
         t = self.t
         if kind == 'power':
@@ -539,10 +552,14 @@ class Sauna:
             try:
                 b = json.loads(value)
             except ValueError:
-                b = {'aktion': 'START', 'code': value}
+                b = {'aktion': 'STOP' if value.strip() == 'STOP' else ''}
+            if not isinstance(b, dict):
+                b = {}
             if b.get('aktion') == 'STOP':
                 self.pending = self.check_start = None
                 await self.send(STOP)
+            elif not self.fresh(b.get('ts')):
+                self.hint(t['stale'])               # only a fresh, one-time start command from HA (timestamp)
             elif not pin_ok(self.o.get('start_pin', '')):
                 self.hint(t['weak_pin'])            # no start with the documented default or a short PIN
             elif time.monotonic() < getattr(self, 'pin_lock_until', 0):
@@ -578,7 +595,7 @@ class Sauna:
                                  'value_template': "{{ 'ON' if value_json.isPoweredOn else 'OFF' }}"})
         disc('lock', 'start_pin', {'name': t['start'], 'icon': 'mdi:sauna', 'command_topic': PRE + '/set/start',
                                    'code_format': '^\\d{4,8}$', 'payload_unlock': 'START', 'payload_lock': 'STOP',
-                                   'command_template': '{"aktion": "{{ value }}", "code": "{{ code }}"}', 'state_topic': st,
+                                   'command_template': '{"aktion": "{{ value }}", "code": "{{ code }}", "ts": {{ now().timestamp() | round(3) }}}', 'state_topic': st,
                                    'value_template': "{{ 'UNLOCKED' if value_json.isPoweredOn or (value_json.statusMessage and value_json.start_time != '00:00' and value_json.state_raw == 2) else 'LOCKED' }}",
                                    'state_locked': 'LOCKED', 'state_unlocked': 'UNLOCKED'})
         disc('select', 'modus', {'name': t['mode'], 'icon': 'mdi:sauna', 'options': ['Sauna', 'Sanarium'], 'command_topic': PRE + '/set/modus',
