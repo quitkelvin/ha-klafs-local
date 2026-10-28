@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2 (docs, 28.10.2026)
+- Safety docs: restrict MQTT access (own broker users, ACL: only HA may publish `klafs/sauna/set/#`); change the
+  control's factory device PIN.
+
 ## 0.2.2
 - Safety: a start needs the timestamp Home Assistant adds to the lock command – older than 60 s or repeated → refused
   (no delayed or replayed start). A plain PIN payload without JSON no longer starts; plain `STOP` still stops.
