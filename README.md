@@ -45,6 +45,8 @@ A sauna heater can start a fire. This software switches a heater on remotely –
   electrician). Without it, do not use remote start at all.
 - The protocol was reverse-engineered; commands can be lost (e.g. the Wi-Fi module drops the connection). Always make
   sure you can switch off at the control panel. **Double-check everything** in your own installation before relying on it.
+- **Restrict MQTT access**: own broker users for the app and HA, ACL so only HA may publish to `klafs/sauna/set/#`;
+  change the control's factory device PIN 1234 (see [DOCS](klafs_local/DOCS.md#mqtt-access-recommended)).
 - You alone are responsible for your installation and its operation. No warranty – see [LICENSE](LICENSE).
 
 ## Installation
@@ -90,7 +92,8 @@ ohne Gewährleistung (siehe LICENSE), Haftung ausgeschlossen, soweit gesetzlich 
 prüfen (nichts auf oder am Ofen). KLAFS erlaubt Fernstart nur mit Sicherheitseinrichtung (SKS-Gitter, BONATHERM oder
 Schlüsselschalter) – die PIN in HA ersetzt das nicht, ebenso wenig Temperaturbegrenzer und Abschaltzeit der Steuerung.
 Ohne eine solche, für den Fernstart zugelassene Einrichtung die App nicht verwenden.
-Ausschalten am Bedienteil muss immer möglich sein. Alles in der eigenen Anlage doppelt prüfen. Keine Gewährleistung.
+MQTT-Zugriff einschränken: eigene Broker-Benutzer für App und HA, per ACL `klafs/sauna/set/#` nur für HA erlauben;
+Geräte-PIN der Steuerung (ab Werk 1234) im Servicemenü ändern. Ausschalten am Bedienteil muss immer möglich sein. Alles in der eigenen Anlage doppelt prüfen. Keine Gewährleistung.
 
 ## License
 

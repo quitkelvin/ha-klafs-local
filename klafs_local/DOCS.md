@@ -85,6 +85,13 @@ preset), `{"aktion": "STOP"}` stops. A start needs `ts` (HA adds it via `now()` 
 60 s old and each value only once – a delayed or replayed start command is refused. Server and HA clock must be in sync. The state JSON also carries `heated_percent`, `minutes_to_ready`, `forecast` and `raw`
 (last heartbeat data).
 
+### MQTT access (recommended)
+Anyone who can publish to `klafs/sauna/set/#` can try to start the sauna – the start PIN, the 5-try lock and the
+timestamp check limit this, but do not replace access control. Give the app and Home Assistant their own broker users
+and, if your broker supports ACLs (Mosquitto app: `customize` → `acl.conf`), allow `klafs/sauna/set/#` only for the
+Home Assistant user and `klafs/sauna/#` (write) only for this app; other clients read-only or nothing. Change the
+control's device PIN from the factory 1234 (service menu "PIN") and set `device_pin` accordingly.
+
 ## Options
 
 | option | meaning |
