@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3
+- Privacy: frame recording (`log_frames`) stops by itself after `log_minutes` (default 60); the start PIN stays masked.
+- Privacy: IP addresses of the module and the return route are logged at debug level only; a dropped frame is logged
+  with its length (content at debug level).
+- Docs: change the control's factory device PIN before use.
+
 ## 0.2.2 (docs, 28.10.2026)
 - Safety docs: restrict MQTT access (own broker users, ACL: only HA may publish `klafs/sauna/set/#`); change the
   control's factory device PIN.

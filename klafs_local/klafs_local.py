@@ -143,7 +143,8 @@ def split(buf, head):
         r = buf[i:end]
         buf = buf[end:]
         if not _valid(r):
-            log.warning('frame dropped (form/CRC): %s', r.hex())
+            log.warning('frame dropped (form/CRC, %s bytes)', len(r))
+            log.debug('dropped frame: %s', r.hex())
             continue
         out.append((int.from_bytes(r[13:15], 'little'), r[15:-4]))
 
@@ -250,10 +251,19 @@ class Sauna:
         self.check_start = None  # start check {'t', 'attempt', 'at'}
         self.heat = None         # HeatUp database (set in main)
         self.run = None          # current heat-up run {'id', 'start', 'temp_start', 'sent': set}
+        # raw recording only on request (log_dir set) and only for log_minutes after the start (default 60, max 24 h)
+        minutes = max(1, min(1440, int(opt.get('log_minutes') or 60)))
+        self.record_until = time.monotonic() + minutes * 60 if opt.get('log_dir') else 0.0
 
     def record(self, rid, direction, data):
+        """Raw frame recording for debugging. The start PIN (K>M 0x1022) is masked by the caller; the MQTT start code is
+        never passed here. Stops by itself after log_minutes."""
         d = self.o.get('log_dir')
-        if not d:
+        if not d or not self.record_until:
+            return
+        if time.monotonic() > self.record_until:
+            self.record_until = 0.0
+            log.warning('frame recording stopped (log_minutes reached) – restart the app to record again')
             return
         t = datetime.datetime.now()
         try:
@@ -325,7 +335,8 @@ class Sauna:
         self.rid += 1
         rid, peer = self.rid, w.get_extra_info('peername')
         self.record(rid, 'OPEN', str(peer).encode())
-        log.info('module connected from %s (#%s)', peer, rid)
+        log.info('module connected (#%s)', rid)
+        log.debug('module address #%s: %s', rid, peer)   # IP addresses only at debug level
         sock = w.get_extra_info('socket')
         if sock is not None:   # only after 180 s silence: the module does NOT answer keepalive probes (heartbeat every 60 s)
             try:

@@ -6,7 +6,8 @@ MODULE_IP=$(bashio::config 'module_ip')
 ROUTER_IP=$(bashio::config 'router_ip')
 # Return route for a DNAT setup (router rewrites the cloud address to this host): answers must go back via the router
 if [ -n "$MODULE_IP" ] && [ -n "$ROUTER_IP" ]; then
-  ip route replace "$MODULE_IP/32" via "$ROUTER_IP" && bashio::log.info "route $MODULE_IP via $ROUTER_IP"
+  ip route replace "$MODULE_IP/32" via "$ROUTER_IP" && bashio::log.info "return route for the module set" \
+    && bashio::log.debug "route $MODULE_IP via $ROUTER_IP"
 fi
 LOGDIR=""
 if bashio::config.true 'log_frames'; then LOGDIR=/share/klafs_local; fi

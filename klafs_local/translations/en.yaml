@@ -19,4 +19,7 @@ configuration:
     description: Only with module IP – the router that does the redirect.
   log_frames:
     name: Record frames
-    description: Write all frames (without PIN) to /share/klafs_local for debugging.
+    description: Write all frames (without PIN) to /share/klafs_local for debugging. Stops after "Recording minutes".
+  log_minutes:
+    name: Recording minutes
+    description: Frame recording stops this many minutes after the app started (1–1440, default 60).

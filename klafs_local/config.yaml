@@ -1,5 +1,5 @@
 name: KLAFS Sauna local
-version: "0.2.2"
+version: "0.2.3"
 slug: klafs_local
 description: Local server for the KLAFS sauna Wi-Fi module – no cloud, control via MQTT/Home Assistant
 url: https://github.com/quitkelvin/ha-klafs-local
@@ -21,6 +21,7 @@ options:
   module_ip: ""
   router_ip: ""
   log_frames: false
+  log_minutes: 60
 schema:
   language: list(en|de)
   device_pin: password
@@ -29,3 +30,4 @@ schema:
   module_ip: str?
   router_ip: str?
   log_frames: bool
+  log_minutes: int(1,1440)

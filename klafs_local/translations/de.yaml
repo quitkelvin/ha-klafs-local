@@ -19,4 +19,7 @@ configuration:
     description: Nur mit Modul-IP – der Router, der umleitet.
   log_frames:
     name: Rahmen mitschreiben
-    description: Alle Rahmen (ohne PIN) nach /share/klafs_local schreiben (Fehlersuche).
+    description: Alle Rahmen (ohne PIN) nach /share/klafs_local schreiben (Fehlersuche). Endet nach „Aufzeichnungsminuten“.
+  log_minutes:
+    name: Aufzeichnungsminuten
+    description: Die Rahmen-Aufzeichnung endet so viele Minuten nach dem Start der App (1–1440, Standard 60).

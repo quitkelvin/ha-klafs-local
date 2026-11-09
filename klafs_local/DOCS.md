@@ -101,7 +101,8 @@ control's device PIN from the factory 1234 (service menu "PIN") and set `device_
 | start_pin | PIN for Home Assistant (lock "Start (PIN)"). **Empty by default – starting is disabled until you set your own PIN (at least 6 characters, no trivial sequence).** 5 wrong PINs lock the start for 15 minutes. |
 | port | 28888 |
 | module_ip, router_ip | only for DNAT: return route |
-| log_frames | write all frames (PIN masked) to /share/klafs_local |
+| log_frames | write all frames (PIN masked) to /share/klafs_local – for debugging only, switch off afterwards |
+| log_minutes | recording stops this many minutes after the app started (default 60, max 1440) |
 
 ## Changes 0.2.2
 - Start only with a fresh, one-time command: HA adds a timestamp, older than 60 s or repeated → refused. A plain PIN as

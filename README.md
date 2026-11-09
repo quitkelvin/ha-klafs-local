@@ -59,7 +59,9 @@ The PIN pad is `custom:bubble-pin-card` from [`dashboard/pin-card.js`](dashboard
 ## Installation
 
 1. Settings › Apps (Add-ons) › App store › ⋮ › Repositories → add `https://github.com/quitkelvin/ha-klafs-local`.
-2. Install **KLAFS Sauna local**, set *Start PIN* (and *Device PIN* if the control does not use the factory 1234), start.
+2. **Change the control's preset device PIN** (factory 1234, service menu "PIN") to your own PIN first. Then install
+   **KLAFS Sauna local**, set *Start PIN* and *Device PIN* (the new control PIN), start. Leave *Record frames* off –
+   switch it on only for debugging; it stops by itself after *Recording minutes* (default 60).
 3. Point the Wi-Fi module to Home Assistant: in the module settings enter the IP of your Home Assistant as server,
    port 28888 – or redirect the cloud address on your router (see DOCS.md, "DNAT").
 4. Sauna control, service menu **20 KEY**: the safe default is **1** – a key switch must confirm every start (the app
@@ -100,7 +102,7 @@ prüfen (nichts auf oder am Ofen). KLAFS erlaubt Fernstart nur mit Sicherheitsei
 Schlüsselschalter) – die PIN in HA ersetzt das nicht, ebenso wenig Temperaturbegrenzer und Abschaltzeit der Steuerung.
 Ohne eine solche, für den Fernstart zugelassene Einrichtung die App nicht verwenden.
 MQTT-Zugriff einschränken: eigene Broker-Benutzer für App und HA, per ACL `klafs/sauna/set/#` nur für HA erlauben;
-Geräte-PIN der Steuerung (ab Werk 1234) im Servicemenü ändern. Ausschalten am Bedienteil muss immer möglich sein. Alles in der eigenen Anlage doppelt prüfen. Keine Gewährleistung.
+**Voreingestellte Geräte-PIN der Steuerung (ab Werk 1234) im Servicemenü ändern.** Rahmen-Aufzeichnung nur zur Fehlersuche einschalten (endet nach 60 min). Ausschalten am Bedienteil muss immer möglich sein. Alles in der eigenen Anlage doppelt prüfen. Keine Gewährleistung.
 
 ## License
 
